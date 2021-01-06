@@ -12,8 +12,8 @@ setup(
                  are covered below...',   # Give a short description about your library
   author = 'Harold J. Iwen',                   # Type in your name
   author_email = 'inventorsniche349@gmail.com',      # Type in your E-Mail
-  url = '',   # Provide either the link to your github or to your website
-  download_url = '',    # I explain this later on
+  url = 'SDFLKJ',   # Provide either the link to your github or to your website
+  download_url = 'SDFLKJ',    # I explain this later on
   keywords = ['Chemistry', 'Mole', 'Stoichiometry','Conversion','Chemical','Equation','Balancing','Chemical_Equation_Balancing'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
           'periodictable',

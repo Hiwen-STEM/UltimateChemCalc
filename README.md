@@ -11,8 +11,8 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 
    def gramToMole(gram,molarMass)<br/>
        +Covert from grams to moles...<br/>
-       	       <li>+gram = The given grams amount.<li/><br/>
-       	       <li>+molarMass = The molar mass of the elment or molecule in question.<li/>
+       	       +gram = The given grams amount.<br/>
+       	       +molarMass = The molar mass of the elment or molecule in question.
 
    def gramToMoleToParticle(gram,molarMass)
        +Convert from grams to particles...

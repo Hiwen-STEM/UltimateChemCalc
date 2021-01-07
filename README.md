@@ -10,7 +10,7 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
        from UltimateChemCalc.conversionM import FUNCTION_NAME
 
    def gramToMole(gram,molarMass)<br/>
-   <span style="padding-left:2em">+Covert from grams to moles...<br/>
+   <span style="padding-left:2em">+Covert from grams to moles...</span><br/>
                +gram = The given grams amount.<br/>
        	       +molarMass = The molar mass of the elment or molecule in question.
 

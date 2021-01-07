@@ -9,12 +9,12 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
    How to use:<br/>
        from UltimateChemCalc.conversionM import FUNCTION_NAME
 
-   def gramToMole(gram,molarMass)<br/>
-       ++Covert from grams to moles...<br/>
-    		+++++gram = The given grams amount.<br/>
-    		+++++molarMass = The molar mass of the elment or molecule in question.
+   # def gramToMole(gram,molarMass)<br/>
+       Covert from grams to moles...<br/>
+    		gram = The given grams amount.<br/>
+    		molarMass = The molar mass of the elment or molecule in question.
 
-   def gramToMoleToParticle(gram,molarMass)
+   # def gramToMoleToParticle(gram,molarMass)
        +Convert from grams to particles...
        		+gram = The given grams amount.
 		+molarMass = The molar mass of the element or molecule in question.

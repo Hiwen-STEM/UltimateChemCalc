@@ -251,4 +251,7 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
    ## def getEquation(equation)
        +Provide an unbalanced chemical equation and get back
         a balanced version. (The provided chemical equation must have no coefficients)
-	  	+equation = The provided chemical equation.B
+	  	+equation = The provided chemical equation.
+       			+Don't Use Spaces!
+       +Example Equation: H2+O2->H2O
+       +Example Equation: H2O+CrO4[-2]+SO3[-2]->Cr(OH)3+SO4[-2]+OH[-1]

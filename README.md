@@ -245,10 +245,10 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 
 # 4. Chemical Equation Balancing
 
-   How to use:
+   How to use:<br/>
        from UltimateChemCalc.balance import FUNCTION_NAME
 
    ## def getEquation(equation)
        +Provide an unbalanced chemical equation and get back
         a balanced version. (The provided chemical equation must have no coefficients)
-	  +equation = The provided chemical equation.B
+	  	+equation = The provided chemical equation.B

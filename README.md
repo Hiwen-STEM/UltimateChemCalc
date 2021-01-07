@@ -6,7 +6,7 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 
 # 1. Basic Mole Conversions:
 
-   How to use:
+   How to use:<br/>
        from UltimateChemCalc.conversionM import FUNCTION_NAME
 
    def gramToMole(gram,molarMass)

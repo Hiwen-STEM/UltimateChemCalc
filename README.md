@@ -7,7 +7,7 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 # 1. Basic Mole Conversions:
 
    How to use:<br/>
-       from UltimateChemCalc.conversionM import FUNCTION_NAME
+       from UltimateChemCalc import FUNCTION_NAME
 
    ## def gramToMole(gram,molarMass)<br/>
        +Covert from grams to moles...
@@ -90,6 +90,10 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 
 # 2. Stoichiometry Conversion Problems
 
+How to use:<br/>
+       from UltimateChemCalc import FUNCTION_NAME
+       
+       
    ## def MoleToMole(given,mole1,mole2)
        +Convert from moles to moles...
        		+given = The given moles amount.
@@ -226,7 +230,7 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 # 3. Molarity Conversion Problems
 
    How to use:
-       from UltimateChemCalc.conversionM import FUNCTION_NAME
+       from UltimateChemCalc import FUNCTION_NAME
 
    ## def LiquidLiterToMole(liter,molarL)
        +Convert from liters to moles (Liquids)...
@@ -246,9 +250,9 @@ Documentation for all conversion and balancing functions (non-user Interface Ver
 # 4. Chemical Equation Balancing
 
    How to use:<br/>
-       from UltimateChemCalc.balance import FUNCTION_NAME
+       from UltimateChemCalc import getEquation
 
-   ## def getEquation(equation)
+   ## def getEquation()
        +Provide an unbalanced chemical equation and get back
         a balanced version. (The provided chemical equation must have no coefficients)
 	  	+The program will prompt the user for input...

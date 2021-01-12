@@ -1390,6 +1390,15 @@ def EquationWrong():
     #window
     print(chem)
 
+    #put together two separate lists of elemnts, one that
+    #accounts for all elements on the reactant side and one
+    #that accounts for all elements on the product side...
+    arOne = []
+    arTwo = []
+
+    #flag indicating that the '->' symbol has been passed up...
+    On = False
+    
     #loop through and put together a list of elements 
     for k in chem:
 
@@ -1670,7 +1679,7 @@ def BracketParentheseMatch(chemLine,left,right):
             #The first check within the condition below: indecesR[x]+1 != len(chemLine), ensures that an illegal memory search isn't performed.
             elif(indecesR[x]+1 != len(chemLine) and (chemLine[indecesR[x] + 1].isdigit() or chemLine[indecesR[x] + 1].isalpha() or chemLine[indecesR[x] + 1] == '>')):
                 return num
-
+            
 
     #return 0 if no error was found
     return 0
@@ -1762,7 +1771,7 @@ def balanceEquation(event):
 
     #If any errors are present within the chemical equationo, EquationWrong() above will return an error code value
     #to the code variable.
-    if(code == -3 or code == -2 or code == -1 or code == 1 or code == 2 or code == 3 or code == 4 or code == 5 or code == 6 or code == 7 or code == 8 or code == 9 or code == 10 or code == 11):
+    if(code == -3 or code == -2 or code == -1 or code == 1 or code == 2 or code == 3 or code == 4 or code == 5 or code == 6 or code == 7 or code == 8 or code == 9 or code == 10 or code == 11 or code == 12):
 
         #If an error is found, clear the contents of the answer text box
         #and only display the error code message.
@@ -1798,6 +1807,8 @@ def balanceEquation(event):
             answer.write("Incorrect use of Parenthese. There should be a subscript after the right parenthese. For instance:\nCu3(PO4)2")
         elif(code == 11):
             answer.write("Bracket pair has no contents. Try Again!")
+        elif(code == 12):
+            answer.write("Not a valid chemical equation. Try Again!")
 
         #exit function after correct error code message has been
         #displayed

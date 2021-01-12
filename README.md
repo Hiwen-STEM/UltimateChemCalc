@@ -259,3 +259,11 @@ How to use:<br/>
        			+Don't Use Spaces!
        +Example Equation: H2+O2->H2O
        +Example Equation: H2O+CrO4[-2]+SO3[-2]->Cr(OH)3+SO4[-2]+OH[-1]
+
+# 5. Graphical-Calculator
+
+  How to use: <br/>
+      from UltimateChemCalc import UChemCalc
+
+  ## Warning!
+     +If using apple OS, you must use pythonw...

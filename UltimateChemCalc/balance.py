@@ -191,13 +191,13 @@ def EquationWrong(equation):
                         arrName.append(sub)
 
                     #if the symbol '->' has be passed...                                                       
-                    if(dashA == True):
+                    if(dashA == True and not(sub in product)):
 
                         #append to product...                                                                  
                         product.append(sub)
 
                     #if the symbol -> hasn't been passed...                                                    
-                    else:
+                    elif(not(sub in reactant)):
 
                         #append to reactants...                                                                
                         reactant.append(sub)
@@ -231,13 +231,13 @@ def EquationWrong(equation):
                     arrName.append(sub)
 
                 #if the symbol '->' has be passed...                                                       
-                if(dashA == True):
+                if(dashA == True and not(sub in product)):
 
                     #append to product...                                                                  
                     product.append(sub)
 
                 #if the symbol -> hasn't been passed...                                                    
-                else:
+                elif(not(sub in reactant)):
 
                     #append to reactants...                                                                
                     reactant.append(sub)
@@ -265,7 +265,8 @@ def EquationWrong(equation):
         #increment countMe, which acts
         #as an index in each iteration
         countMe = countMe + 1
-    
+
+        
     #check to see if the equation is valid based on the elements...                                            
     if(len(product) != len(reactant)):
 

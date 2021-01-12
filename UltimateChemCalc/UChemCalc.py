@@ -1,3 +1,4 @@
+
 #utilze periodictable for getting
 #all element symbols and atomic
 #masses
@@ -639,10 +640,17 @@ def quit1(event):
     #frame to end the application
     global frame
 
+    #reset application so
+    #a new wx object can be
+    #created when start is called...
+    global application
+    
     #close the frame to end
     #the application
     frame.Close()
 
+    #reset application...
+    del application
 
 #END OF SECTION THREE--------------------------------------------------------------------------------
 
@@ -4658,48 +4666,68 @@ double = 0
 #boolean flag
 ONE = False
 
-#prepare application
-application = wx.App()
+#The application, panel, and frame
+#variables that will soon act as important
+#wxpython related references...
+application = None
+panel = None
+frame = None
 
-#get dimensions of current screen
-width, height = wx.GetDisplaySize()
+#start the graphical program...
+def startG():
 
-#setup the dimensions of the frame...
-#should the dimensions be larger than that of
-#the base frame used during development, use the
-#base frame dimensions. Should the dimensions
-#be smaller than the base frame's, use the current
-#screen dimensions.
-if(width > 1680):
-    width = 1680
-if(height > 1050):
-    height = 1050
+    #gain access to the global variables
+    #that were declared just before this function
+    #so they can be modified and hold references to
+    #the wx object, panel object, and frame object
+    #respectively...
+    global application
+    global panel
+    global frame
+    
+    #prepare application
+    application = wx.App()
 
-#setup the frame with the dimensions from above...
-frame = wx.Frame(parent = None, title = 'The Ultimate Chemistry Calculator',size=wx.Size(width,height))
+    #get dimensions of current screen
+    width, height = wx.GetDisplaySize()
 
-#create the window where all the controls will appear
-panel = wx.lib.scrolledpanel.ScrolledPanel(frame)
-vbox = wx.BoxSizer(wx.VERTICAL)
-vbox.Add(wx.Size(1680, 1050))
-panel.SetSizer(vbox)
-panel.SetupScrolling()
+    #setup the dimensions of the frame...
+    #should the dimensions be larger than that of
+    #the base frame used during development, use the
+    #base frame dimensions. Should the dimensions
+    #be smaller than the base frame's, use the current
+    #screen dimensions.
+    if(width > 1680):
+        width = 1680
+    if(height > 1050):
+        height = 1050
+    
+    #setup the frame with the dimensions from above...
+    frame = wx.Frame(parent = None, title = 'The Ultimate Chemistry Calculator',size=wx.Size(width,height))
+
+    #create the window where all the controls will appear
+    panel = wx.lib.scrolledpanel.ScrolledPanel(frame)
+    vbox = wx.BoxSizer(wx.VERTICAL)
+    vbox.Add(wx.Size(1680, 1050))
+    panel.SetSizer(vbox)
+    panel.SetupScrolling()
 
 
-#set background color
-panel.SetBackgroundColour(wx.Colour(173,230,230))
+    #set background color
+    panel.SetBackgroundColour(wx.Colour(173,230,230))
 
-#function to add all periodic table buttons
-periodic_setup(panel)
+    #function to add all periodic table buttons
+    periodic_setup(panel)
+    
+    #function to add all problem buttons
+    problemButtons(panel)
 
-#function to add all problem buttons
-problemButtons(panel)
+    #review video buttons
+    review(panel)
 
-#review video buttons
-review(panel)
+    #show the windows
+    frame.Show()
 
-#show the windows
-frame.Show()
-
-#start application
-application.MainLoop()
+    #start application
+    application.MainLoop()
+    

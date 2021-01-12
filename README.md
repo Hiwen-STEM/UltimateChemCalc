@@ -263,7 +263,11 @@ How to use:<br/>
 # 5. Graphical-Calculator
 
   How to use: <br/>
-      from UltimateChemCalc import UChemCalc
+      from UltimateChemCalc import startG
+
+  ## def startG()
+      +Launch the graphical desktop application containing every chemistry calculator within
+       this documentation...
 
   ## Warning!
      +If using apple OS, you must use pythonw...

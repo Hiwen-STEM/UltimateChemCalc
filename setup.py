@@ -8,7 +8,7 @@ setup(
     description='A collection of chemistry-related conversion calculators.',
     long_description=(here / 'README.md').read_text(encoding='utf-8'),
     long_description_content_type='text/markdown',
-    version = '2.23',
+    version = '2.26',
     license='MIT',
     author = 'Harold J. Iwen',
     author_email = 'inventorsniche349@gmail.com',

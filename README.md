@@ -4,6 +4,13 @@ PYPI Package containing chemistry related calculators that cover basic mole conv
 # Overview
 Documentation for all conversion and balancing functions (non-user Interface Version):
 
+# 0. Version 3.0 Addition:
+     This new version includes a new feature within the graphical version. The graphical version now has a new alpha version balancer that
+     can balance equations in acidic/basic solutions. Do note though that this feature is in the ALPHA phase, and so some kinks are still being
+     worked out, and an additional feature will be added within the next version that will get rid of these kinks (an oxidation number solver).
+     Until most of the kinks are worked out though, the old chemical equation balancer will be associated with the getEquation() function. Within
+     the graphical version, the old chemical equation balancer is also provided through the Normal Balance Button...
+
 # 1. Basic Mole Conversions:
 
    How to use:<br/>

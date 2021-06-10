@@ -30,7 +30,10 @@ import string
 #use regular expressions to
 #simplify error detection
 import re
-
+#
+#use webbrowser module to open webpage...
+import webbrowser as wb
+#
 ########### Purpose: The purpose of this program is to provide a user-friendly interface for navigating chemistry based
 #                    conversion problems. The types of conversion problems provided range from basic mole conversions, to
 #                    all stoichiometry based convrsion problems, and finally, a select amount of molarity based problems.
@@ -640,6 +643,12 @@ def quit1(event):
     #frame to end the application
     global frame
 
+    #reset set 1 before leaving...
+    global set1
+
+    #reset it...
+    set1 = 0
+    
     #reset application so
     #a new wx object can be
     #created when start is called...
@@ -727,11 +736,27 @@ def instruction(parent,x,y):
 
 #review video buttons setup
 def review(addToParent):
-    rev = wx.Button(addToParent,label = "Review One Video: Download the Full Package from Inventorsniche.com",pos = wx.Point(160,450 + 90 + 45))
-    rev2 = wx.Button(addToParent,label = "Review Two Video: Download the Full Package from Inventorsniche.com",pos = wx.Point(160,450 + 90 + 45 + 45))
+    rev = wx.Button(addToParent,label = "Mole Conversions Online Review Video (NEED INTERNET)",pos = wx.Point(160,450 + 90 + 45))
+    rev.Bind(wx.EVT_BUTTON, moleReview)
+    rev2 = wx.Button(addToParent,label = "Stoichiometry Online Review Video (NEED INTERNET)",pos = wx.Point(160,450 + 90 + 45 + 45))
+    rev2.Bind(wx.EVT_BUTTON, stoichiometryReview)
 
 
+#open up mole review video...
+def stoichiometryReview(event):
 
+    #open url...
+    wb.open("https://drive.google.com/file/d/1VwRYIIwHQ9TCBaEC_oGBXP1bXVpNccBM/view", new = 1)
+
+    
+    
+#open up mole review video...
+def moleReview(event):
+
+    #open url...
+    wb.open("https://drive.google.com/file/d/11MBDYXM1Smc0t7QlPx7x2pWQSijkLSh2/view", new = 1)
+    
+    
 #create all buttons associated with the
 #chemical equation balancing problem
 def ChemBalanceButtons(event):
@@ -781,6 +806,12 @@ def ChemBalanceButtons(event):
     #The direction variable for telling the user
     #what to do...
     global direction
+    #
+    #the third calculate button...
+    global calculate3
+    #
+    #The fourth calculate button...
+    global calculate4
 
 
     #if no other problem is active at the moment
@@ -846,11 +877,19 @@ def ChemBalanceButtons(event):
 
             #create the calculation button that the user will press when he or she wishes to
             #balance the chemical equation within the input text box.
-            calculate2 = wx.Button(panel,label = "Balance",pos=wx.Point((360)+wi,495+hi))
+            calculate2 = wx.Button(panel,label = "Normal Balance",pos=wx.Point((360)+wi,495+hi))
             calculate2.Bind(wx.EVT_BUTTON,balanceEquation)
 
+            #create the calculate3 button for reactions in acid solution
+            calculate3 = wx.Button(panel,label = "Balance in Acidic Solution",pos=wx.Point((480)+wi,495+hi))
+            calculate3.Bind(wx.EVT_BUTTON,acidBalance)
+
+            #create the calculate4 button for reactions in acid solution
+            calculate4 = wx.Button(panel,label = "Balance in Basic Solution",pos=wx.Point((480)+wi,540+hi))
+            calculate4.Bind(wx.EVT_BUTTON,basicBalance)
+            
             wi,hi = w.GetPosition()
-            direction = wx.StaticText(panel,label = "Chemical Equation Balancer Instructions:\n\n1. Use the periodic table to punch in elements...\nFor instance, press H two times to write H with subscript two into the equation bar.\n2. Use the extra buttons provided to form your chemical equation...\n3. When including charges, use the bracket buttons provided. For instnace:\nH[+1]+SO3[-2]->...\n4. If you make a mistake, erase what you have manually\nand try again (this is how the function resets).",pos = wx.Point(670+wi,490+hi))
+            direction = wx.StaticText(panel,label = "Chemical Equation Balancer Instructions:\n1. Use the periodic table to punch in elements...\nFor instance, press H two times to write H with subscript two into the equation bar.\n2. Use the extra buttons provided to form your chemical equation...\n3. When including charges, use the bracket buttons provided. For instnace:\nH[+1]+SO3[-2]->...\n4. If you make a mistake, erase what you have manually\nand try again (this is how the function resets).\n\n***WARNING: If using the Acidic/Basic features of the chemical equation balancer, know that\nit is a new feature that is currently in the beta testing phase;\nright away, it can be said that not all output will be correct for certain inputs.\nThis is due to the fact that when two or more free variables show up, the program tries a different combination of H2O and H+/OH-\non either side of the equation. Most of the time these combinations will filter out\nthe incorrect answers, but other times, it doesn't filter all of them because some have correct form after gaussian elimination.\nAn oxidation number solver will correct this in the next version, but for now, take output with a grain of salt.",pos = wx.Point(670+wi,490+hi))
             
     #if another problem is currently setup
     #enter the delet1 button in order to delete
@@ -1720,10 +1759,394 @@ def BracketParentheseMatch(chemLine,left,right):
 #Section Nine is dedicated to actually balancing a chemical equation.
 #This section also holds responsibility for executing all error detection functions.
 
+
+#basic solution balance...
+def basicBalance(event):
+
+    #global equation variable...
+    global equation
+
+    #gain access to AB global variable...
+    global AB
+
+    #answer text box...
+    global answer
+
+    #arrName variable...
+    global arrName
+    
+    #get the equation within the equation
+    #text box...
+    chem = equation.GetValue()
+
+    #get error code...
+    code = EquationWrong()
+
+    #return the code message...
+    returnError(code)
+
+    #see if code == 0...
+    if(code != 0):
+
+        #return from the function...
+        return
+
+
+    #go over all six possibilities...
+    for x in range(7):
+
+        #change AB
+        AB = None
+
+        #copy variable...
+        copy = None
+            
+        #all possibilities...
+        if(x == 0):
+                
+            #modify copy...
+            copy = "H2O+"+chem+"+OH[-1]"
+                
+        elif(x == 1):
+                
+            #modify copy...
+            copy = "OH[-1]+"+chem+"+H2O"
+
+        elif(x == 2):
+                
+            #modify copy...
+            copy = "OH[-1]+"+chem
+
+        elif(x == 3):
+                
+            #modify copy...
+            copy = "H2O+"+chem
+
+        elif(x == 4):
+
+            #modify copy...
+            copy = chem+"+OH[-1]"
+
+        elif(x == 5):
+                
+            #modify copy...
+            copy = chem+"+H2O"
+
+        else:
+                
+            #modify copy...
+            copy = chem
+
+        #change arrName...
+        arrName = uniqueElements(copy)
+            
+        #balance...
+        result = linearBalance(copy)
+            
+        #check AB...
+        if(AB == None):
+
+            #clear answer...
+            answer.Clear()
+
+            #clear equation...
+            equation.Clear()
+                
+            #write answer...
+            answer.write(result)
+                
+            #break out of loop...
+            break
+
+        elif(x == 6 and result == None):
+
+            #clear answer text box...
+            answer.Clear()
+                
+            #write message...
+            answer.write("None of the linear algebra trials succeeded. Assuming the input equation is a redox equation, it is possible that it is still solvable if the number of elements (charge included if in the equation) is greater than the number of unknown coefficients; when the number of elements is greater than unknown coefficients by 2 or more, more than one free variable is introduced, and solving via linear algebra is no longer accurate. The next version of this software will include an Oxidation Number Solver within a half reaction algorithm in order to solve some of these unsolvable cases...")
+
+#acid solution balance...
+def acidBalance(event):
+
+    #global equation variable...
+    global equation
+
+    #gain access to AB global variable...
+    global AB
+
+    #answer text box...
+    global answer
+
+    #arrName variable...
+    global arrName
+    
+    #get the equation within the equation
+    #text box...
+    chem = equation.GetValue()
+
+    #get error code...
+    code = EquationWrong()
+
+    #return the code message...
+    returnError(code)
+
+    #see if code == 0...
+    if(code != 0):
+
+        #return from the function...
+        return
+
+
+    #go over all six possibilities...
+    for x in range(7):
+
+        #change AB
+        AB = None
+
+        #copy variable...
+        copy = None
+            
+        #all possibilities...
+        if(x == 0):
+                
+            #modify copy...
+            copy = "H2O+"+chem+"+H[+1]"
+                
+        elif(x == 1):
+                
+            #modify copy...
+            copy = "H[+1]+"+chem+"+H2O"
+
+        elif(x == 2):
+                
+            #modify copy...
+            copy = "H[+1]+"+chem
+
+        elif(x == 3):
+                
+            #modify copy...
+            copy = "H2O+"+chem
+
+        elif(x == 4):
+
+            #modify copy...
+            copy = chem+"+H[+1]"
+
+        elif(x == 5):
+                
+            #modify copy...
+            copy = chem+"+H2O"
+
+        else:
+                
+            #modify copy...
+            copy = chem
+
+        #change arrName...
+        arrName = uniqueElements(copy)
+            
+        #balance...
+        result = linearBalance(copy)
+            
+        #check AB...
+        if(AB == None):
+
+            #clear answer...
+            answer.Clear()
+
+            #clear equation...
+            equation.Clear()
+                
+            #write answer...
+            answer.write(result)
+                
+            #break out of loop...
+            break
+
+        elif(x == 6 and result == None):
+
+            #clear answer text box...
+            answer.Clear()
+                
+            #write message...
+            answer.write("None of the linear algebra trials succeeded. Assuming the input equation is a redox equation, it is possible that it is still solvable if the number of elements (charge included if in the equation) is greater than the number of unknown coefficients; when the number of elements is greater than unknown coefficients by 2 or more, more than one free variable is introduced, and solving via linear algebra is no longer accurate. The next version of this software will include an Oxidation Number Solver within a half reaction algorithm in order to solve some of these unsolvable cases...")
+
+
+#get all unique elements...
+def uniqueElements(half):
+
+    #element list...
+    L = []
+
+    #segment variable...
+    seg = ""
+        
+    #get elements in first half...
+    for x in range(len(half)):
+
+        #see if the character is capital...
+        if(half[x].isupper() and len(seg) == 0):
+
+            #update seg...
+            seg = seg + half[x]
+
+        elif(half[x].isupper()):
+
+            #add seg to list...
+            if(not(seg in L)):
+                L.append(seg)
+
+            #update seg...
+            seg = "" + half[x]
+
+        elif(half[x].islower()):
+
+            #update seg...
+            seg = seg + half[x]
+
+            #add seg to list...
+            if(not(seg in L)):
+                L.append(seg)
+
+            #update seg to length 0...
+            seg = ""
+
+        #the case that a capitol letter is last in the string...
+        if(x == len(half)-1 and len(seg) == 1):
+
+            #append seg...
+            if(not(seg in L)):
+                L.append(seg)
+
+    #return list...
+    return L
+                
+
+#get a list of elements...
+def getElements(half):
+        
+    #element list...
+    L = []
+
+    #segment variable...
+    seg = ""
+        
+    #get elements in first half...
+    for x in range(len(half)):
+
+        #see if the character is capital...
+        if(half[x].isupper() and len(seg) == 0):
+
+            #update seg...
+            seg = seg + half[x]
+
+        elif(half[x].isupper()):
+
+            #add seg to list...
+            L.append(seg)
+
+            #update seg...
+            seg = "" + half[x]
+
+        elif(half[x].islower()):
+
+            #update seg...
+            seg = seg + half[x]
+
+            #add seg to list...
+            L.append(seg)
+
+            #update seg to length 0...
+            seg = ""
+
+        #the case that a capitol letter is last in the string...
+        if(x == len(half)-1 and len(seg) == 1):
+
+            #append seg...
+            L.append(seg)
+
+    #return list...
+    return L
+            
+#error code return...
+def returnError(code):
+
+    #global anser variable...
+    global answer
+
+    #If any errors are present within the chemical equationo, EquationWrong() above will return an error code value
+    #to the code variable.
+    if(code == -3 or code == -2 or code == -1 or code == 1 or code == 2 or code == 3 or code == 4 or code == 5 or code == 6 or code == 7 or code == 8 or code == 9 or code == 10 or code == 11 or code == 12):
+
+        #If an error is found, clear the contents of the answer text box
+        #and only display the error code message.
+        answer.Clear()
+
+        #All of the following blocks are didicated to error code conditions and
+        #Their associated messages...
+        if(code == -3):
+            answer.write("Can't have more than one reaction symbol: ->. Try Again!")
+        elif(code == -2):
+            answer.write("Missing + and/or -> components! Try Again!\nIf + and/or -> are missing, it is not a valid chemical reaction.")
+        elif(code == -1):
+            answer.write("There is a coefficient present before a element/molecule and/or inapropriate placement of '+', '-', and/or '>' characters. Try Again!")
+        elif(code == 1):
+            answer.write("Incomplete chemical equation. Try Again!")
+        elif(code == 2):
+            answer.write("Either the number of parentheses of each type are unbalanced (there must be the same # of ( and ) parenthesese) or the parenthesese of each type are not paired correctly -> (pair). Try Again!")
+        elif(code == 3):
+            answer.write("Invalid Element Input! Try Again!")
+        elif(code == 4):
+            answer.write("Either the number of brackets of each type are unnbalanced (there must be the same # of [ and ] brackets) or the brackets of each type are not paired correctly -> [pair]. Try Again!")
+        elif(code == 5):
+            answer.write("Parenthese pair contents is incorrect. Try Again!")
+        elif(code == 6):
+            answer.write("Parenthese pair positioning is incorrect. Try Again!")
+        elif(code == 7):
+            answer.write("Bracket pair contents is incorrect. Try Again!")
+        elif(code == 8):
+            answer.write("Bracket pair positioning is incorrect. Try Again!")
+        elif(code == 9):
+            answer.write("Parenthese pair has no contents. Try Again!")
+        elif(code == 10):
+            answer.write("Incorrect use of Parenthese. There should be a subscript after the right parenthese. For instance:\nCu3(PO4)2")
+        elif(code == 11):
+            answer.write("Bracket pair has no contents. Try Again!")
+        elif(code == 12):
+            answer.write("Not a valid chemical equation. Try Again!")
+
+
+#check if element is in substring...
+def inSubstring(el, substring):
+
+
+    #check if el is length 2...
+    if(len(el) == 2):
+        if(el in substring):
+            return substring.index(el)
+        else:
+            return -1
+    else:
+        for x in range(len(substring)):
+            if(substring[x] == el and x+1 != len(substring) and not(substring[x+1].islower())):
+
+                return x
+
+            elif(substring[x] == el and x+1 == len(substring)):
+
+                return x
+
+        return -1
+            
+    
 #Perform the process of balancing the chemical equation given
 #by the user...
 def balanceEquation(event):
 
+    #acid/base flag variable...
+    global AB
+    
     #Nothing within the equation
     #is modified, but since it is referenced,
     #it is mentiond within the global variable
@@ -1777,51 +2200,503 @@ def balanceEquation(event):
     #provided by the user is valid...
     code = EquationWrong()
 
-    #If any errors are present within the chemical equationo, EquationWrong() above will return an error code value
-    #to the code variable.
-    if(code == -3 or code == -2 or code == -1 or code == 1 or code == 2 or code == 3 or code == 4 or code == 5 or code == 6 or code == 7 or code == 8 or code == 9 or code == 10 or code == 11 or code == 12):
+    #display the error...
+    returnError(code)
 
-        #If an error is found, clear the contents of the answer text box
-        #and only display the error code message.
-        answer.Clear()
+    #see if there was an error...
+    if(code != 0):
 
-        #All of the following blocks are didicated to error code conditions and
-        #Their associated messages...
-        if(code == -3):
-            answer.write("Can't have more than one reaction symbol: ->. Try Again!")
-        elif(code == -2):
-            answer.write("Missing + and/or -> components! Try Again!\nIf + and/or -> are missing, it is not a valid chemical reaction.")
-        elif(code == -1):
-            answer.write("There is a coefficient present before a element/molecule and/or inapropriate placement of '+', '-', and/or '>' characters. Try Again!")
-        elif(code == 1):
-            answer.write("Incomplete chemical equation. Try Again!")
-        elif(code == 2):
-            answer.write("Either the number of parentheses of each type are unbalanced (there must be the same # of ( and ) parenthesese) or the parenthesese of each type are not paired correctly -> (pair). Try Again!")
-        elif(code == 3):
-            answer.write("Invalid Element Input! Try Again!")
-        elif(code == 4):
-            answer.write("Either the number of brackets of each type are unnbalanced (there must be the same # of [ and ] brackets) or the brackets of each type are not paired correctly -> [pair]. Try Again!")
-        elif(code == 5):
-            answer.write("Parenthese pair contents is incorrect. Try Again!")
-        elif(code == 6):
-            answer.write("Parenthese pair positioning is incorrect. Try Again!")
-        elif(code == 7):
-            answer.write("Bracket pair contents is incorrect. Try Again!")
-        elif(code == 8):
-            answer.write("Bracket pair positioning is incorrect. Try Again!")
-        elif(code == 9):
-            answer.write("Parenthese pair has no contents. Try Again!")
-        elif(code == 10):
-            answer.write("Incorrect use of Parenthese. There should be a subscript after the right parenthese. For instance:\nCu3(PO4)2")
-        elif(code == 11):
-            answer.write("Bracket pair has no contents. Try Again!")
-        elif(code == 12):
-            answer.write("Not a valid chemical equation. Try Again!")
-
-        #exit function after correct error code message has been
-        #displayed
+        #return since there was an error...
         return
 
+  
+    #get all indeces of '+' in the chemical equation....
+
+    #substring will hold all of the element/compound segments that
+    #exist in betweeen '+' and '->' symbols...
+    substring = []
+
+    #holds the indeces of all '+' characters
+    indeces = []
+
+    #Used for pulling substrings that are between
+    #the '+' and '->' symbols
+    countMe = 0
+
+    #Get all indeces associatedd with the '+'
+    #characters.
+    for g in range(len(chem)):
+        if(chem[g] == '+' or chem[g] == '-'):
+            if(chem[g - 1] != '['):
+                indeces.append(g)
+
+    #now extract the substrings and append them
+    #to the list associated with the substring variable.
+    for g in range(len(indeces) + 1):
+        if(countMe == 0):
+            substring.append(chem[:indeces[g]])
+            countMe = indeces[g]
+        elif(g < len(indeces)):
+            substring.append(chem[countMe:indeces[g]])
+            countMe = indeces[g]
+        else:
+            substring.append(chem[countMe:])
+
+    #The number of rows present within the
+    #coefficient matrix be the same as the number of
+    #unique elements present within the chemical equation.
+    rows = len(arrName)
+    
+    #make sure to account for charges
+    #(a row is reserved for all charges)
+    if('[' in chem):
+        rows += 1
+
+    #The number of substrings extracted from
+    #the chemical equation will be the same as the
+    #number of columns needed within the coefficient matrix.
+    columns = len(substring)
+
+    #initial matrix template
+    matrix = [[]] * rows
+        
+    #Insert all collumns into the matrix template
+    for x in range(rows):
+        matrix[x] = [0] * columns
+
+
+    #now create the matrix... But first add all values:
+
+    #Right now we only care about the values associated
+    #with elements. Reduce the row variable for now if charges
+    #are present.
+    if('[' in chem):
+        tempRow = rows - 1
+    else:
+        tempRow = rows
+
+    #look over elements first
+    for x in range(tempRow):
+
+        #Get an element symbol from
+        #the arrName list
+        el = arrName[x]
+
+        #Used to indiciate if the products portion of the
+        #chemical equation has been reached (after the '->' symbol)...
+        flag9 = 0
+
+        #Add values to each column for the
+        #corresponding row...
+        for k in range(columns):
+                
+            #Enter this block if the element is within one of the
+            #pulled substrings...
+            nindex = inSubstring(el, substring[k])
+            if(el in substring[k] and nindex > -1):
+
+                #enter this block if the element symbol is only one capital letter.
+                if(len(el) == 1):
+
+                    #Detect if a digit comes after the element symbol. If so, assign that digit value to the matrix cell
+                    if((nindex + 1 != len(substring[k])) and substring[k][nindex + 1].isdigit()):
+
+                        #Get the entire subscript...
+                        #First get an even smaller substring
+                        sty = substring[k][nindex + 2:]
+                        
+                        #now based on the smaller substring, extract the whole subscript
+                        #(it most likely will only be one digit, but it could be more)
+                        subscript2 = substring[k][nindex + 1]
+                        for gh in range(len(sty)):
+
+                            #check if the current element is a digit, and if so,
+                            #append it to subscript2
+                            if(sty[gh].isdigit()):
+
+                                #append the digit to subscript2
+                                subscript2 += sty[gh]
+
+                            #if the element is not a digit, then the end of all subscript
+                            #recording is done...
+                            else:
+
+                                #break out of the for loop
+                                break
+
+                        #once '->' has been passed, all subscript values must
+                        #be multiplied by negative one.
+                        if(('>' in substring[k]) or flag9 == 100):
+                            matrix[x][k] = -1 * int(subscript2)
+                            if(flag9 == 0):
+                                flag9 = 100
+                        
+                        #If '->' has not been passed, assign the positive value
+                        #to matrix...
+                        else:
+                            matrix[x][k] = int(subscript2)
+
+                    #If not digit is detected after the element symbol, assign a value of
+                    #positive or negative one...
+                    else:
+                        if('>' in substring[k] or flag9 == 100):
+                            matrix[x][k] = -1
+                            if(flag9 == 0):
+                                flag9 = 100
+                        else:
+                            matrix[x][k] = 1
+
+                #If an element made of two letters (one capital and one lowercase), move two elements ahead in order to
+                #begin getting the subscript...
+                else:
+
+                    #Detect if a digit comes after the element symbol, and if so, assing that value to the matrix...
+                    if((nindex + 2 != len(substring[k])) and substring[k][nindex + 2].isdigit()):
+
+                        #Get the entire subscript...
+                        #First get an even smaller substring
+                        sty = substring[k][nindex + 3:]
+                        
+                        #now based on the smaller substring, extract the whole subscript
+                        #(it most likely will only be one digit, but it could be more)
+                        subscript3 = substring[k][nindex + 2]
+                        for gh in range(len(sty)):
+
+                            #check if the current element is a digit, and if so,
+                            #append it to subscript2
+                            if(sty[gh].isdigit()):
+
+                                #append the digit to subscript2
+                                subscript3 += sty[gh]
+
+                            #if the element is not a digit, then the end of all subscript
+                            #recording is done...
+                            else:
+
+                                #break out of the for loop
+                                break
+
+                        #If the '->' symbol has been passed,
+                        #assign the subscript value multiplied by -1
+                        if('>' in substring[k] or flag9 == 100):
+                            matrix[x][k] = -1 * int(subscript3)
+                            if(flag9 == 0):
+                                flag9 = 100
+
+                        #assign the positive version of the subscript if
+                        #the '->' symbol has not been passed...
+                        else:
+                            matrix[x][k] = int(subscript3)
+
+                    #assign a value of one or negative one if no
+                    #digit is found after the element symbol...
+                    else:
+                        if('>' in substring[k] or flag9 == 100):
+                            matrix[x][k] = -1
+                            if(flag9 == 0):
+                                flag9 = 100
+                        else:
+                            matrix[x][k] = 1
+                
+                #make sure to incorporate digit after parenthese if any
+                #for instance: (H2SO4)2
+
+                #first make sure that the element is actually within the parenthesis
+                if(')' in substring[k]):
+
+                    #check if the location of the element symbol is within the bounds of the parenthese pair...
+                    if((nindex > substring[k].index('(')) and (nindex < substring[k].index(')'))):
+
+                        #Get the entire subscript...
+                        #First get an even smaller substring
+                        stm = substring[k][substring[k].index(')') + 1:]
+                        
+                        #now based on the smaller substring, extract the whole subscript
+                        #(it most likely will only be one digit, but it could be more)
+                        subscript4 = ""
+                        for gh in range(len(stm)):
+
+                            #check if the current element is a digit, and if so,
+                            #append it to subscript2
+                            if(stm[gh].isdigit()):
+
+                                #append the digit to subscript2
+                                subscript4 += stm[gh]
+
+                            #if the element is not a digit, then the end of all subscript
+                            #recording is done...
+                            else:
+
+                                #break out of the for loop
+                                break
+
+                        #assign the subscript4 value to the matrix cell...
+                        matrix[x][k] = matrix[x][k] * int(subscript4)
+                
+            #Make sure to indicate if a crossover from the ractants to
+            #the products side of the chemical equation ahs been reached
+            #by assigning the flag9 variable the value 100.
+            else:
+                if('>' in substring[k]):
+                    flag9 = 100
+    
+    #Now look over the charges
+    if('[' in chem):
+
+        #reset the flag9 variable
+        flag9 = 0
+
+        #go over each substring..
+        for y in range(columns):
+
+            #Assign a charge value to the matrix if brackets
+            #are present...
+            if('[' in substring[y]):
+
+                #Receive the charge value within the bracket pair...
+                Megatron = int(substring[y][substring[y].index('[') + 1:substring[y].index(']')])
+
+                #Make megatron a negative value if '->' has been passed...
+                if('>' in substring[y] or flag9 == 100):
+                    matrix[rows-1][y] = Megatron * -1
+                    if(flag9 == 0):
+                        flag9 = 100
+
+                #Leave megatron as a positive value if '->' has not
+                #been passed...
+                else:
+                    matrix[rows-1][y] = Megatron
+
+            #assign 100 to flag9 if '->' is passed...
+            elif('>' in substring[y]):
+                flag9 = 100
+
+    #turn 2d array represented by the matrix variable 
+    #into a sympy matrix...
+    matrix = sympy.Matrix(matrix)
+    
+    #now balance the equation
+    reduced = matrix.rref()
+
+    if(IsUnbalanceable(reduced)):
+
+        answer.Clear()
+        answer.write("Equation is unbalanceable via linear algebra, due to no solution or more than one free variable. If the input equation is a redox equation, it is possible that it is still solvable if the number of elements (charge included if in the equation) is greater than the number of unknown coefficients; when the number of elements is greater than unknown coefficients, more than one free variable is introduced, and solving via linear algebra is no longer accurate....")
+        return
+    
+    #Provide the balanced equation...
+    else:
+
+        #get individual equations from matrix
+        arrEquations = []
+
+        #create a blank equation variable
+        equ = ""
+
+        #hold in memory all lower case letters
+        alphas = string.ascii_lowercase
+
+        #counter for alphas
+        counter = 0
+        
+        #hold a denominator value wheen necessary
+        denominator = None
+
+        #List of denominators
+        denominators = []
+
+        #increment variable...
+        colCount = 1
+        
+        #n will be used to access the overall row and y will
+        #be used to aid in creating separate equations to be evaluated...
+        for n in range(columns * rows):
+
+            #start writing the new equation
+            if(reduced[0][n] == 1 and ((n+1)/columns != colCount)):
+                equ += alphas[counter]+'='
+                counter = counter + 1
+
+            elif((n+1)/columns == colCount and not(reduced[0][n] < 0)):
+
+                #check if n is on the last position...
+                if(not(colCount == rows and reduced[0][n] == 0)):
+                
+                    answer.Clear()
+                    answer.write("Inconclusive...")
+                    return
+
+            #The end of a row has been reached once a negative value
+            #has been reached.
+            elif(reduced[0][n] < 0 and (n+1)/columns == colCount):
+
+                #invert the negative value and assign to equation
+                equ += str(-1*reduced[0][n])
+
+                #append the equation to the equations
+                #structure
+                arrEquations.append(equ)
+
+                #reset equation variable
+                equ = ""
+
+                #store the inverted negative value in a temp
+                #variable...
+                temp = str(-1*reduced[0][n])
+
+                #Find the greatest denominator value
+                if(denominator == None and '/' in str(reduced[0][n])):
+                    index = temp.index('/')
+                    denominator = int(temp[index + 1:])
+                elif('/' in str(reduced[0][n]) and int(temp[temp.index('/') + 1:]) > denominator):
+                    denominator = int(temp[temp.index('/') + 1:])
+
+                #save all denominators within structure so we can find Least common multiple later...
+                if('/' in str(reduced[0][n])):
+                    denominators.append(int(temp[temp.index('/') + 1:]))
+
+                colCount = colCount + 1
+
+            elif((n+1)/columns == colCount):
+
+                #increment colCount...
+                colCount = colCount + 1
+
+        #find the least common multiple if denominators were present
+        if(denominator != None and len(denominators) > 1):
+            LCM = denominator
+            BarneyStinson = 0
+            while(BarneyStinson == 0):
+                for x in range(len(denominators)):
+                    if(LCM % denominators[x] != 0):
+                        break
+                    elif(LCM % denominators[x] == 0 and (x + 1 == len(denominators))):
+                        BarneyStinson = 10
+                        break
+                if(BarneyStinson == 0):
+                    LCM += 1
+
+            denominator = LCM
+
+
+        #output the new equation to terminal window
+        print(arrEquations)
+
+        #setup a new equation variable
+        newE = ""
+
+        #If no denominators were present after reduction
+        if(denominator == None):
+            
+            #in the case of no fractions         
+            coeff = 0
+
+            #Create the new balanced chemical equation
+            for u2 in range(len(list(chem))):
+                if(u2 == 0 or (((list(chem)[u2 - 1] == '+' and list(chem)[u2-2] != '[') or list(chem)[u2 - 1] == '>') and coeff != len(arrEquations))):
+                    newE += str(arrEquations[coeff][arrEquations[coeff].index('=') + 1:])
+                    newE += chem[u2]
+                    coeff = coeff + 1
+                else:
+                    newE += chem[u2]
+
+        #if denominators were present after reduction
+        else:
+
+            #in the case of fractions                 
+            coeff = 0
+
+            #create the new balanced chemical equation
+            for u2 in range(len(list(chem))):
+                if(u2 == 0 or (((list(chem)[u2 - 1] == '+' and list(chem)[u2-2] != '[') or list(chem)[u2 - 1] == '>') and coeff != len(arrEquations))):
+                    str1 = arrEquations[coeff][arrEquations[coeff].index('=') + 1:]
+
+                    #Make sure to multiply by the value within denominator...
+                    if('/' not in str1):
+                        newE += str(int(arrEquations[coeff][arrEquations[coeff].index('=') + 1:]) * denominator)
+                        newE += chem[u2]
+
+                    #If '/' is in the equation, divide the numerator and denominator and then
+                    #multiply by the vale within denominator...
+                    else:
+                        num1 = str1[:str1.index('/')]
+                        num2 = str1[str1.index('/') + 1:]
+                        num3 = int((int(num1) / int(num2)) * denominator)
+                        if(num3 != 1):
+                            newE += str(num3)
+                        newE += chem[u2]
+                    coeff = coeff + 1
+                elif((list(chem)[u2 - 1] == '+' and list(chem)[u2-2] != '[') or list(chem)[u2 - 1] == '>'):
+                    newE += str(denominator)
+                    newE += chem[u2]
+                else:
+                    newE += chem[u2]
+            
+        
+    #write new equation to the answer text box
+    answer.write("\n" + newE)
+
+    #Now erase the contents of the equation
+    #textbox
+    equation.Clear()
+    subscripts = 0
+
+    #reset variables
+    columns = 0
+    rows = 0
+
+
+
+#Perform the process of balancing the chemical equation given
+#by the user...
+def linearBalance(chem):
+
+    #acid/base flag variable...
+    global AB
+    
+    #Nothing within the equation
+    #is modified, but since it is referenced,
+    #it is mentiond within the global variable
+    #section.
+    global equation
+
+    #Not used for anything important at the moment, but
+    #did serve a big purpose during testing. It will stay
+    #here if a need for it should arise again; this would
+    #involve modifying its value.
+    global output
+
+    #The number of columns required for the
+    #coefficient matrix.
+    global columns
+
+    #The number of rows required for the
+    #coefficient matrix.
+    global rows
+
+    #A free variable that was used for experimenting. It's global
+    #declaration will remain here in case it is needed again.
+    global up
+
+    #Not modified in this section, but is referenced
+    #a couple of times. This declaration serves the purpose
+    #of reminding any readers that the global variable arrName
+    #is used for extracting the list values associatd with it.
+    global arrName
+
+    #This variable is no longer utilized within this function
+    #but will remain here in case a design change occurs in the future.
+    global sub
+
+    #The value associated with answer isn't actually modified,
+    #but it is referenced so the actual answer can be written to 
+    #the answer text box.
+    global answer
+
+    #Subscripts was accessed within this function at one
+    #point as well, but no more due to design changes. This delcaration
+    #will remain here in case another change occurrs in the future.
+    global subscripts
   
     #get all indeces of '+' in the chemical equation....
 
@@ -1905,21 +2780,22 @@ def balanceEquation(event):
                 
             #Enter this block if the element is within one of the
             #pulled substrings...
-            if(el in substring[k]):
+            nindex = inSubstring(el, substring[k])
+            if(el in substring[k] and nindex > -1):
 
                 #enter this block if the element symbol is only one capital letter.
                 if(len(el) == 1):
 
                     #Detect if a digit comes after the element symbol. If so, assign that digit value to the matrix cell
-                    if((substring[k].index(el) + 1 != len(substring[k])) and substring[k][substring[k].index(el) + 1].isdigit()):
+                    if((nindex + 1 != len(substring[k])) and substring[k][nindex + 1].isdigit()):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
-                        sty = substring[k][substring[k].index(el) + 2:]
+                        sty = substring[k][nindex + 2:]
                         
                         #now based on the smaller substring, extract the whole subscript
                         #(it most likely will only be one digit, but it could be more)
-                        subscript2 = substring[k][substring[k].index(el) + 1]
+                        subscript2 = substring[k][nindex + 1]
                         for gh in range(len(sty)):
 
                             #check if the current element is a digit, and if so,
@@ -1963,15 +2839,15 @@ def balanceEquation(event):
                 else:
 
                     #Detect if a digit comes after the element symbol, and if so, assing that value to the matrix...
-                    if((substring[k].index(el) + 2 != len(substring[k])) and substring[k][substring[k].index(el) + 2].isdigit()):
+                    if((nindex + 2 != len(substring[k])) and substring[k][nindex + 2].isdigit()):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
-                        sty = substring[k][substring[k].index(el) + 3:]
+                        sty = substring[k][nindex + 3:]
                         
                         #now based on the smaller substring, extract the whole subscript
                         #(it most likely will only be one digit, but it could be more)
-                        subscript3 = substring[k][substring[k].index(el) + 2]
+                        subscript3 = substring[k][nindex + 2]
                         for gh in range(len(sty)):
 
                             #check if the current element is a digit, and if so,
@@ -2017,7 +2893,7 @@ def balanceEquation(event):
                 if(')' in substring[k]):
 
                     #check if the location of the element symbol is within the bounds of the parenthese pair...
-                    if((substring[k].index(el) > substring[k].index('(')) and (substring[k].index(el) < substring[k].index(')'))):
+                    if((nindex > substring[k].index('(')) and (nindex < substring[k].index(')'))):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
@@ -2089,11 +2965,14 @@ def balanceEquation(event):
     
     #now balance the equation
     reduced = matrix.rref()
+
+    print(reduced)
     
-    #check if solving is possible
+    #check if the equation can be balanced...
     if(IsUnbalanceable(reduced)):
+
         answer.Clear()
-        answer.write("Equation is unbalanceable.\nThis is most likely due to a mistyped/missing subscript or charge, but look for mistyped/missing elements too.\nGo over your chemical equation and try again.")
+        AB = 23
         return
 
     #Provide the balanced equation...
@@ -2117,18 +2996,30 @@ def balanceEquation(event):
         #List of denominators
         denominators = []
 
+        #increment variable...
+        colCount = 1
+        
         #n will be used to access the overall row and y will
         #be used to aid in creating separate equations to be evaluated...
         for n in range(columns * rows):
 
             #start writing the new equation
-            if(reduced[0][n] == 1):
+            if(reduced[0][n] == 1 and ((n+1)/columns != colCount)):
                 equ += alphas[counter]+'='
                 counter = counter + 1
 
+            elif((n+1)/columns == colCount and not(reduced[0][n] < 0)):
+
+                #check if n is on the last position...
+                if(not(colCount == rows and reduced[0][n] == 0)):
+                
+                    answer.Clear()
+                    AB = 54
+                    return
+
             #The end of a row has been reached once a negative value
             #has been reached.
-            elif(reduced[0][n] < 0):
+            elif(reduced[0][n] < 0 and (n+1)/columns == colCount):
 
                 #invert the negative value and assign to equation
                 equ += str(-1*reduced[0][n])
@@ -2154,6 +3045,14 @@ def balanceEquation(event):
                 #save all denominators within structure so we can find Least common multiple later...
                 if('/' in str(reduced[0][n])):
                     denominators.append(int(temp[temp.index('/') + 1:]))
+
+                #increment colCount...
+                colCount = colCount + 1
+                    
+            elif((n+1)/columns == colCount):
+
+                #increment colCount...
+                colCount = colCount + 1
 
         #find the least common multiple if denominators were present
         if(denominator != None and len(denominators) > 1):
@@ -2227,11 +3126,9 @@ def balanceEquation(event):
             
         
     #write new equation to the answer text box
-    answer.write("\n" + newE)
+    return newE
 
-    #Now erase the contents of the equation
-    #textbox
-    equation.Clear()
+    #reset subscripts
     subscripts = 0
 
     #reset variables
@@ -2549,6 +3446,8 @@ def delete1():
     global equation
     global output
     global calculate2
+    global calculate3
+    global calculate4
     global right
     global left
     global direction
@@ -2612,6 +3511,8 @@ def delete1():
             Robin.Destroy()
             Batman.Destroy()
             calculate2.Destroy()
+            calculate3.Destroy()
+            calculate4.Destroy()
             answer.Destroy()
 
     #set set1 back to zero
@@ -4580,6 +5481,9 @@ direction = None
 #set deletion flag
 set1 = 0
 
+#acid/base flag variable...
+AB = None
+
 #mole conversion ratio determinant variable
 rOl = None
 
@@ -4589,6 +5493,8 @@ problem = 0
 #calculate button variable
 calculate = None
 calculate2 = None
+calculate3 = None
+calculate4 = None
 
 #Flag variable to determine if problem type has been chosen...
 molarVar = 0

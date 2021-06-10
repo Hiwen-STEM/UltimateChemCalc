@@ -505,6 +505,29 @@ def BracketParentheseMatch(chemLine,left,right):
 
 
 
+#check if element is in substring...                                                                                                               
+def inSubstring(el, substring):
+
+
+    #check if el is length 2...                                                                                                                    
+    if(len(el) == 2):
+        if(el in substring):
+            return substring.index(el)
+        else:
+            return -1
+    else:
+        for x in range(len(substring)):
+            if(substring[x] == el and x+1 != len(substring) and not(substring[x+1].islower())):
+
+                return x
+
+            elif(substring[x] == el and x+1 == len(substring)):
+
+                return x
+
+        return -1
+
+
 #Perform the process of balancing the chemical equation given
 #by the user...
 def balanceEquation(equation):
@@ -646,21 +669,22 @@ ion. Try Again!")
                 
             #Enter this block if the element is within one of the
             #pulled substrings...
+            nindex = inSubstring(el, substring[k])
             if(el in substring[k]):
 
                 #enter this block if the element symbol is only one capital letter.
                 if(len(el) == 1):
 
                     #Detect if a digit comes after the element symbol. If so, assign that digit value to the matrix cell
-                    if((substring[k].index(el) + 1 != len(substring[k])) and substring[k][substring[k].index(el) + 1].isdigit()):
+                    if((nindex + 1 != len(substring[k])) and substring[k][nindex + 1].isdigit()):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
-                        sty = substring[k][substring[k].index(el) + 2:]
+                        sty = substring[k][nindex + 2:]
                         
                         #now based on the smaller substring, extract the whole subscript
                         #(it most likely will only be one digit, but it could be more)
-                        subscript2 = substring[k][substring[k].index(el) + 1]
+                        subscript2 = substring[k][nindex + 1]
                         for gh in range(len(sty)):
 
                             #check if the current element is a digit, and if so,
@@ -704,15 +728,15 @@ ion. Try Again!")
                 else:
 
                     #Detect if a digit comes after the element symbol, and if so, assing that value to the matrix...
-                    if((substring[k].index(el) + 2 != len(substring[k])) and substring[k][substring[k].index(el) + 2].isdigit()):
+                    if((nindex + 2 != len(substring[k])) and substring[k][nindex + 2].isdigit()):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
-                        sty = substring[k][substring[k].index(el) + 3:]
+                        sty = substring[k][nindex + 3:]
                         
                         #now based on the smaller substring, extract the whole subscript
                         #(it most likely will only be one digit, but it could be more)
-                        subscript3 = substring[k][substring[k].index(el) + 2]
+                        subscript3 = substring[k][nindex + 2]
                         for gh in range(len(sty)):
 
                             #check if the current element is a digit, and if so,
@@ -758,7 +782,7 @@ ion. Try Again!")
                 if(')' in substring[k]):
 
                     #check if the location of the element symbol is within the bounds of the parenthese pair...
-                    if((substring[k].index(el) > substring[k].index('(')) and (substring[k].index(el) < substring[k].index(')'))):
+                    if((nindex > substring[k].index('(')) and (nindex < substring[k].index(')'))):
 
                         #Get the entire subscript...
                         #First get an even smaller substring
@@ -833,7 +857,7 @@ ion. Try Again!")
     
     #check if solving is possible
     if(IsUnbalanceable(reduced,rows,columns)):
-        print("Equation is unbalanceable.\nThis is most likely due to a mistyped/missing subscript or charge, but look for mistyped/missing elements too.\nGo over your chemical equation and try again.")
+        print("Equation is unbalanceable.\nThis is most likely due to a mistyped/missing subscript or charge, but look for mistyped/missing elements too.\nGo over your chemical equation and try again. If there are more unique elements than there are reactants+products (a difference of two or more), it is possible that the equation is still solvable; the reason why it came back false is possibly because more than one free variable was detected. In the case of more than one free variable when balancing equations, the linear algebra method is no longer accurate.")
         return
 
     #Provide the balanced equation...
